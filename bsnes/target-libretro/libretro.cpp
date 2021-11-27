@@ -711,10 +711,14 @@ void retro_get_system_info(retro_system_info *info)
 
 void retro_get_system_av_info(struct retro_system_av_info *info)
 {
-	info->geometry.base_width  = 512;   // accurate ppu
-	info->geometry.base_height = program->overscan ? 480 : 448; // accurate ppu
-	info->geometry.max_width   = 2048;  // 8x 256 for hd mode 7
-	info->geometry.max_height  = 1920;  // 8x 240
+	// HACK! assume fast ppu and use 256x240 as base resolution
+	// to allow 9x upscaling in 4k
+	uint w = 256;
+	uint h = program->overscan ? 240 : 224;
+	info->geometry.base_width  = w;
+	info->geometry.base_height = h;
+	info->geometry.max_width   = w * 8;  // 8x for hd mode 7
+	info->geometry.max_height  = h * 8;  // 8x for hd mode 7
 	info->geometry.aspect_ratio = get_aspect_ratio();
 	info->timing.sample_rate   = SAMPLERATE;
 
